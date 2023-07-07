@@ -23,7 +23,7 @@ go.sum
 **/parking
 
 test/**/build/
-# test/unittest/generated
+# tests/unittest/generated
 
 compile_commands.json
 # FIXME: remove this in case you want this to be available for everyone.

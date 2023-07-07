@@ -71,7 +71,7 @@ jobs:
           docker run \
             --rm \
             --platform linux/amd64 \
-            --workdir /builder/mnt/test/unittest \
+            --workdir /builder/mnt/tests/unittest \
             -v ${{ github.workspace }}:/builder/mnt \
             cproject-builder:latest \
             /bin/bash -c "ceedling clobber; ceedling gcov:all; ceedling utils:gcov"
@@ -81,7 +81,7 @@ jobs:
         run: |
           staging="reports-${{github.run_number}}"
           mkdir -p "$staging"
-          cp -r test/unittest/build/artifacts/gcov "$staging"
+          cp -r tests/unittest/build/artifacts/gcov "$staging"
           tar czf "$staging.tar.gz" "$staging"
           echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
       -
