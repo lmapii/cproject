@@ -1,0 +1,20 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.159.0/containers/cpp
+{
+  "name": "C",
+  "build": {
+    "dockerfile": "../builder.Dockerfile"
+  },
+  "runArgs": ["--platform=linux/amd64"],
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        // Faster install of extensions - and currently seems to be problematic on macos
+        // https://github.com/microsoft/vscode-remote-release/issues/8169
+        "extensions.verifySignature": false
+      },
+      "extensions": ["ms-vscode.cpptools", "ms-vscode.cmake-tools", "cschlosser.doxdocgen"]
+    }
+  }
+}
