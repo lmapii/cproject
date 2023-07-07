@@ -26,3 +26,5 @@ test/**/build/
 # test/unittest/generated
 
 compile_commands.json
+# FIXME: remove this in case you want this to be available for everyone.
+.vscode/c_cpp_properties.json
