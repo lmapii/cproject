@@ -51,7 +51,6 @@ RUN apt-get install -y --no-install-recommends \
 RUN ln -s /usr/bin/clang-format-${llvm_version} /usr/local/bin/clang-format
 RUN ln -s /usr/bin/clang-tidy-${llvm_version} /usr/local/bin/clang-tidy
 
-
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # install clang wrappers
 
@@ -68,3 +67,11 @@ RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-tidy/releases/d
     rm clang-utils.tgz
 ENV PATH /usr/local/run-clang-tidy:$PATH
 RUN run-clang-format --version
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# install unity and ceedling
+
+# install unity cmock and ceedling (unit test environment)
+RUN gem install ceedling
+# set standard encoding to UTF-8 for ruby (and thus ceedling)
+ENV RUBYOPT "-KU -E utf-8:utf-8"
