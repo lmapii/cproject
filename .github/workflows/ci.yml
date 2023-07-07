@@ -1,0 +1,95 @@
+
+name: ci
+on:
+  # FIXME: if you want this to be available for PRs, uncomment this line
+  # pull_request:
+  push:
+    branches:
+    - main
+  schedule:
+    - cron: '0 1 * * 0'
+
+# https://docs.docker.com/build/ci/github-actions/share-image-jobs/
+# just using caches instead of artifact upload.
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v2
+      -
+        name: Create docker cache folder
+        run: mkdir -p /tmp/docker
+      -
+        name: Restore docker image
+        id: cache-docker
+        uses: actions/cache@v3
+        with:
+          path: /tmp/docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('builder.Dockerfile') }}
+      -
+        name: Build docker builder-image
+        if: steps.cache-docker.outputs.cache-hit != 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: builder.Dockerfile
+          tags: cproject-builder:latest
+          outputs: type=docker,dest=/tmp/docker/${{ runner.os }}-builder-image.tar
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: docker-build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-buildx-action@v2
+      -
+        name: Restore docker image
+        id: cache-docker
+        uses: actions/cache@v3
+        with:
+          path: /tmp/docker
+          key: ${{ runner.os }}-docker-${{ hashFiles('builder.Dockerfile') }}
+      -
+        name: Load image
+        run: |
+          docker load --input /tmp/docker/${{ runner.os }}-builder-image.tar
+          docker image ls -a
+      -
+        name: Build library
+        run: |
+          docker run \
+            --rm \
+            --platform linux/amd64 \
+            --workdir /builder/mnt \
+            -v ${{ github.workspace }}:/builder/mnt \
+            cproject-builder:latest \
+            /bin/bash -c "rm -rf build; cmake -B build; cmake --build build"
+      -
+        name: Test library
+        run: |
+          docker run \
+            --rm \
+            --platform linux/amd64 \
+            --workdir /builder/mnt/test/unittest \
+            -v ${{ github.workspace }}:/builder/mnt \
+            cproject-builder:latest \
+            /bin/bash -c "ceedling clobber; ceedling gcov:all; ceedling utils:gcov"
+      -
+        name: Archive coverage results
+        shell: bash
+        run: |
+          staging="reports-${{github.run_number}}"
+          mkdir -p "$staging"
+          cp -r test/unittest/build/artifacts/gcov "$staging"
+          tar czf "$staging.tar.gz" "$staging"
+          echo "ASSET=$staging.tar.gz" >> $GITHUB_ENV
+      -
+        name: Archive artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: reports-${{github.run_number}}
+          path: ${{ env.ASSET }}
+          retention-days: 3
+
+# TODO: delete cache on merge.

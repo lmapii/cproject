@@ -1,10 +1,7 @@
-/**
- * \file test_dummy.c
- */
-
-#include "unity.h"
+/** \file test_dummy.c  */
 
 #include "dummy/dummy.h"
+#include "unity.h"
 
 void setUp(void)
 {
