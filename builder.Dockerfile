@@ -19,3 +19,5 @@ RUN apt-get install -y --no-install-recommends \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
+VOLUME ["/builder/mnt"]
+WORKDIR /builder/mnt

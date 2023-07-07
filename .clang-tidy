@@ -1,0 +1,121 @@
+---
+Checks: '
+    -*,
+    clang-*,
+    bugprone-assert-side-effect,
+    bugprone-bool-pointer-implicit-conversion,
+    bugprone-incorrect-roundings,
+    bugprone-integer-division,
+    bugprone-macro-parentheses,
+    bugprone-macro-repeated-side-effects,
+    bugprone-misplaced-widening-cast,
+    bugprone-multiple-statement-macro,
+    bugprone-sizeof-expression,
+    bugprone-suspicious-enum-usage,
+    bugprone-suspicious-missing-comma,
+    bugprone-suspicious-semicolon,
+    bugprone-terminating-continue,
+    bugprone-too-small-loop-variable,
+    cppcoreguidelines-avoid-goto,
+    misc-definitions-in-headers,
+    misc-misplaced-const,
+    misc-redundant-expression,
+    misc-unused-parameters,
+    readability-braces-around-statements,
+    readability-const-return-type,
+    readability-else-after-return,
+    readability-function-size,
+    readability-implicit-bool-conversion,
+    readability-inconsistent-declaration-parameter-name,
+    readability-isolate-declaration,
+    readability-magic-numbers,
+    readability-misplaced-array-index,
+    readability-named-parameter,
+    readability-non-const-parameter,
+    readability-redundant-control-flow,
+    readability-redundant-declaration,
+    readability-redundant-preprocessor,
+    readability-uppercase-literal-suffix,
+    readability-identifier-naming,
+    '
+WarningsAsErrors: '
+    bugprone-assert-side-effect,
+    bugprone-bool-pointer-implicit-conversion,
+    bugprone-incorrect-roundings,
+    bugprone-integer-division,
+    bugprone-macro-parentheses,
+    bugprone-macro-repeated-side-effects,
+    bugprone-misplaced-widening-cast,
+    bugprone-multiple-statement-macro,
+    bugprone-sizeof-expression,
+    bugprone-suspicious-enum-usage,
+    bugprone-suspicious-missing-comma,
+    bugprone-suspicious-semicolon,
+    bugprone-terminating-continue,
+    bugprone-too-small-loop-variable,
+    cppcoreguidelines-avoid-goto,
+    misc-definitions-in-headers,
+    misc-misplaced-const,
+    misc-redundant-expression,
+    misc-unused-parameters,
+    readability-braces-around-statements,
+    readability-const-return-type,
+    readability-else-after-return,
+    readability-function-size,
+    readability-implicit-bool-conversion,
+    readability-inconsistent-declaration-parameter-name,
+    readability-isolate-declaration,
+    readability-magic-numbers,
+    readability-misplaced-array-index,
+    readability-named-parameter,
+    readability-non-const-parameter,
+    readability-redundant-control-flow,
+    readability-redundant-declaration,
+    readability-redundant-preprocessor,
+    readability-uppercase-literal-suffix,
+    # readability-identifier-naming,
+    '
+
+# From the docs: "Output warnings from headers matching this filter"
+# But the goal should be to exclude(!) the headers for which clang-tidy is not called,
+# e.g., for naming convention checks. DO NOT USE this field if you don't want to analyze
+# header files just because they're included (seems to work).
+# HeaderFilterRegex: '$'
+# https://github.com/Kitware/CMake/blob/master/.clang-tidy
+HeaderFilterRegex: '.*\.(h|hxx|cxx)$'
+AnalyzeTemporaryDtors: false
+FormatStyle:     none
+User:            martin
+CheckOptions:
+    - { key:  bugprone-assert-side-effect.AssertMacros,                           value:  assert          }
+    - { key:  bugprone-assert-side-effect.CheckFunctionCalls,                     value:  '0'             }
+    - { key:  bugprone-misplaced-widening-cast.CheckImplicitCasts,                value:  '1'             }
+    - { key:  bugprone-sizeof-expression.WarnOnSizeOfConstant,                    value:  '1'             }
+    - { key:  bugprone-sizeof-expression.WarnOnSizeOfIntegerExpression,           value:  '1'             }
+    - { key:  bugprone-sizeof-expression.WarnOnSizeOfThis,                        value:  '1'             }
+    - { key:  bugprone-sizeof-expression.WarnOnSizeOfCompareToConstant,           value:  '1'             }
+    - { key:  bugprone-suspicious-enum-usage.StrictMode,                          value:  '0'             }
+    - { key:  bugprone-suspicious-missing-comma.MaxConcatenatedTokens,            value:  '5'             }
+    - { key:  bugprone-suspicious-missing-comma.RatioThreshold,                   value:  '0.200000'      }
+    - { key:  bugprone-suspicious-missing-comma.SizeThreshold,                    value:  '5'             }
+    - { key:  misc-definitions-in-headers.HeaderFileExtensions,                   value:  ',h,hh,hpp,hxx' }
+    - { key:  misc-definitions-in-headers.UseHeaderFileExtension,                 value:  '1'             }
+    - { key:  readability-braces-around-statements.ShortStatementLines,           value:  '1'             }
+    - { key:  readability-function-size.LineThreshold,                            value:  '500'           }
+    - { key:  readability-function-size.StatementThreshold,                       value:  '800'           }
+    - { key:  readability-function-size.ParameterThreshold,                       value:  '10'            }
+    - { key:  readability-function-size.NestingThreshold,                         value:  '6'             }
+    - { key:  readability-function-size.VariableThreshold,                        value:  '15'            }
+    - { key:  readability-implicit-bool-conversion.AllowIntegerConditions,        value:  '0'             }
+    - { key:  readability-implicit-bool-conversion.AllowPointerConditions,        value:  '0'             }
+    - { key:  readability-implicit-bool-conversion.AllowPointerConditions,        value:  '0'             }
+    - { key:  readability-inconsistent-declaration-parameter-name.IgnoreMacros,   value:  '1'             }
+    - { key:  readability-inconsistent-declaration-parameter-name.Strict,         value:  '1'             }
+    - { key:  readability-magic-numbers.IgnoredFloatingPointValues,               value:  '1.0;100.0;'    }
+    - { key:  readability-magic-numbers.IgnoredIntegerValues,                     value:  '1;2;3;4;'      }
+    - { key:  readability-magic-numbers.IgnorePowersOf2IntegerValues,             value:  '0'             }
+    - { key:  readability-magic-numbers.IgnoreAllFloatingPointValues,             value:  '0'             }
+    - { key:  readability-redundant-declaration.IgnoreMacros,                     value:  '1'             }
+    - { key:  readability-redundant-function-ptr-dereference,                     value:  '1'             }
+    - { key:  readability-uppercase-literal-suffix.IgnoreMacros,                  value:  '0'             }
+    - { key:  readability-uppercase-literal-suffix.IgnoreMacros,                  value:  '0'             }
