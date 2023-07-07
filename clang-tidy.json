@@ -1,0 +1,6 @@
+{
+  "paths": ["./src/**/*.[ch]"],
+  "filterPre": [".*"],
+  "filterPost": ["./build/**"],
+  "buildRoot": "./build"
+}
