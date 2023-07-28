@@ -53,8 +53,6 @@ Throughout this article, we'll set up a complete, containerized development envi
 
 Throughout this article, I'll make use of the [Docker](https://www.docker.com/) command line interface. It is, however, out of the scope to discuss the basic concepts or the _Docker_ command line parameters. In case you don't understand why certain parameters are needed, I'd kindly ask you to refer to the online documentation.
 
-The impatient reader can just skip ahead and open the [example project on GitHub](https://github.com/lmapii/cproject). If you're happy to be walked through the steps, however, I'd be happy to guide you through the entire setup.
-
 ## Containers for development
 
 Working with embedded systems or C/C++ in general sometimes requires installing lots of specialized tools or compilers. If you are working on different projects at the same time, you'll easily end up with conflicting versions. Therefore, whenever feasible, I tend to run everything within a [Docker](https://www.docker.com/) _container_.
@@ -84,7 +82,7 @@ $ cd cproject
 $ git init
 ```
 
-Make sure you have [Docker](https://www.docker.com/) installed and running. Create the following [`builder.Dockerfile`](https://github.com/lmapii/cproject/blob/main/builder.Dockerfile) in the root directory of the project:
+Make sure you have [Docker](https://www.docker.com/) installed and running. Create the following [`builder.Dockerfile`](builder.Dockerfile) in the root directory of the project:
 
 ```dockerfile
 ARG base_tag=bullseye
@@ -108,7 +106,7 @@ RUN apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 ```
 
-> **Note:** Throughout this article, I'll only show relevant parts of the _Dockerfile_ and may omit some sections that you'll find in the [_Dockerfile_ in the demo repository](https://github.com/lmapii/cproject/blob/main/builder.Dockerfile).
+> **Note:** Throughout this article, I'll only show relevant parts of the _Dockerfile_ and may omit some sections that you'll find in the [_Dockerfile_](builder.Dockerfile).
 
 This _Dockerifle_ specifies a base image and installs some packages that we'll use in future steps. I won't go into detail about each and every package: When creating your own image you'll soon notice if something is missing and you can just extend this list of packages. What is important is the following:
 
@@ -127,7 +125,7 @@ $ docker build -f builder.Dockerfile -t cproject-builder:latest .
 
 ### A shortcut for verbose command line invocations
 
-Docker commands are quite verbose, and they only tend to become even longer, which is why I typically park my most used commands in a [`makefile`](https://github.com/lmapii/cproject/blob/main/makefile) in the project root. Assuming you have `make` installed, you could do the following to make your life a little easier. Your future self will thank you for not having to remember all commands:
+Docker commands are quite verbose, and they only tend to become even longer, which is why I typically park my most used commands in a [`makefile`](makefile) in the project root. Assuming you have `make` installed, you could do the following to make your life a little easier. Your future self will thank you for not having to remember all commands:
 
 ```makefile
 project_name=cproject
@@ -172,7 +170,7 @@ The downside of **not** having all tools installed locally is that those tools c
 
 `vscode` allows you to run an instance of the editor within a so-called _development container_. This is also the reason why we chose the `mcr.microsoft.com/vscode/devcontainers/base` image as the base image: We can connect `vscode` within our builder container and therefore have all the tools available! Have a look at the [tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial) for the exact steps or in case anything fails whilst following along this article. For now, I assume that you have `vscode` and the [Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) extension installed.
 
-By creating the [`.devcontainer/devcontainer.json`](https://github.com/lmapii/cproject/blob/main/.devcontainer/devcontainer.json) file, we can tell `vscode` to use our newly built image for its development container, and we'll install some extensions in the container along the way:
+By creating the [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json) file, we can tell `vscode` to use our newly built image for its development container, and we'll install some extensions in the container along the way:
 
 ```json
 {
@@ -195,11 +193,11 @@ By creating the [`.devcontainer/devcontainer.json`](https://github.com/lmapii/cp
 
 If you now reload your window or reopen `vscode` (using the `cproject` folder as the root folder!) `vscode` should now ask you if it should use the detected development container.
 
-<img src="https://github.com/lmapii/cproject/blob/main/assets/vscode-reload.png?raw=true">
+<img src="assets/vscode-reload.png?raw=true">
 
 It'll take a while for `vscode` to set up your container and install the extensions, but in the end you should have `vscode` connected to your Linux container, with all previous tools installed.
 
-<img src="https://github.com/lmapii/cproject/blob/main/assets/vscode-remote.png?raw=true">
+<img src="assets/vscode-remote.png?raw=true">
 
 ## A skeleton subsystem
 
@@ -226,7 +224,7 @@ uint8_t dummy_random(void)
 }
 ```
 
-I'll spare you the details, the `CMakeLists.txt` simply defines a library named "Dummy" and adds the corresponding files to the library. Have a look at the [example project on GitHub](https://github.com/lmapii/cproject) and its [`CMakeLists.txt`](https://github.com/lmapii/cproject/blob/main/CMakeLists.txt) file. What's important is: This already builds within our development container and `vscode`! Open the integrated terminal in your remote instance and execute `cmake` as follows.
+I'll spare you the details, the `CMakeLists.txt` simply defines a library named "Dummy" and adds the corresponding files to the library. Have a look at the [`CMakeLists.txt`](CMakeLists.txt) file. What's important is: This already builds within our development container and `vscode`! Open the integrated terminal in your remote instance and execute `cmake` as follows.
 
 ```bash
 $ cmake -B build
@@ -273,7 +271,7 @@ The key takeaway is the following: Since the container is executed in a VM, the 
 
 Thankfully, _Docker_ has provided a good solution for macOS with the `VirtioFS` file-sharing implementation. All you need to do is enable it in your _Docker_ configuration:
 
-<img src="https://github.com/lmapii/cproject/blob/main/assets/docker-sharing.png?raw=true">
+<img src="assets/docker-sharing.png?raw=true">
 
 For Windows, at the time of writing, I don't know of a similar solution so you might have to dig a little deeper in case you run into performance problems. Personally, I've successfully used [docker-sync](https://docker-sync.io/) before, but it is a bit harder to handle.
 
@@ -335,7 +333,7 @@ The flexibility of C and C++ comes with plenty of massive footguns so, personall
 
 Also, when collaborating on a codebase, a formatter is always a nice thing to have, and since we're installing `clang-tidy` anyhow, we might as well go ahead and install [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html).
 
-The two configuration files [`.clang-format`](https://github.com/lmapii/cproject/blob/main/.clang-format) and [`.clang-tidy`](https://github.com/lmapii/cproject/blob/main/.clang-tidy) are placed into the root directory of the project such that any IDE picks them up automatically. I won't go into detail about the options of the two tools and will just assume that the reader follows the previous links for more details or copies the files from the [example project on GitHub](https://github.com/lmapii/cproject). So this is what we have now:
+The two configuration files [`.clang-format`](.clang-format) and [`.clang-tidy`](.clang-tidy) are placed into the root directory of the project such that any IDE picks them up automatically. I won't go into detail about the options of the two tools and will just assume that the reader follows the previous links. So this is what we have now:
 
 ```bash
 $ tree --charset=utf-8 --dirsfirst -a -I build -I .git -L 1
@@ -395,9 +393,9 @@ Debian LLVM version 16.0.6
 
 `vscode` typically needs to be instructed to rebuild the development container from the _Dockerfile_. You can do so explicitly using the command prompt:
 
-<img src="https://github.com/lmapii/cproject/blob/main/assets/vscode-rebuild.png?raw=true">
+<img src="assets/vscode-rebuild.png?raw=true">
 
-Now you have `clang-tidy` and `clang-format` available within your development container. You can now also instruct `vscode` to automatically format your files on save. For this, we create a workspace configuration [`.vscode/settings.json`](https://github.com/lmapii/cproject/blob/main/.vscode/settings.json) file:
+Now you have `clang-tidy` and `clang-format` available within your development container. You can now also instruct `vscode` to automatically format your files on save. For this, we create a workspace configuration [`.vscode/settings.json`](.vscode/settings.json) file:
 
 ```json
 {
@@ -412,7 +410,7 @@ Now you have `clang-tidy` and `clang-format` available within your development c
 }
 ```
 
-I've hidden a little detail here: `clang-tidy` operates on the `compile_commands.json` file that can be created when using `cmake` as a build system. I've enabled this option within the [`CMakeLists.txt`](https://github.com/lmapii/cproject/blob/main/CMakeLists.txt) file. At the same time, we're allowing the `cmake` extension for `vscode` to configure the project when opening and therefore have all the fancy buttons and actions available to build the project in case you don't like the command line. Personally, I still fall back to the command line. But then, I'm a dinosaur.
+I've hidden a little detail here: `clang-tidy` operates on the `compile_commands.json` file that can be created when using `cmake` as a build system. I've enabled this option within the [`CMakeLists.txt`](CMakeLists.txt) file. At the same time, we're allowing the `cmake` extension for `vscode` to configure the project when opening and therefore have all the fancy buttons and actions available to build the project in case you don't like the command line. Personally, I still fall back to the command line. But then, I'm a dinosaur.
 
 Now, if you open the `dummy.c` file in your editor it will automatically format it according to the rules in your `.clang-format` file whenever you save the file. But what if someone in your team doesn't use `vscode` or forgot to enable the format-on-save feature?
 
@@ -519,9 +517,9 @@ $ make builder-build
 
 ### Configuring `Unity` and running unit tests
 
-Lots of resources exist on how to set up `Unity` and `Ceedling`, including an [excellent article on Embedded Artistry](https://embeddedartistry.com/blog/2019/2/25/unit-testing-and-reporting-on-a-build-server-using-ceedling-and-unity/) or the [_ThrowTheSwitch's_ own articles](https://www.throwtheswitch.org/articles). In short, you set the configuration switches for `Unity` in a dedicated [`unity_config.h`](https://github.com/lmapii/cproject/blob/main/tests/unittest/support/unity_config.h) file, and configure `Ceedling` with the [`project.yml`](https://github.com/lmapii/cproject/blob/main/tests/unittest/project.yml). `Ceedling` is a neat little helper that generates all the test runners for you, so all you need to do is add your own test files and tell `Ceedling` how to detect them. Have a look at the files in the [example project on GitHub](https://github.com/lmapii/cproject) in case you need details!
+Lots of resources exist on how to set up `Unity` and `Ceedling`, including an [excellent article on Embedded Artistry](https://embeddedartistry.com/blog/2019/2/25/unit-testing-and-reporting-on-a-build-server-using-ceedling-and-unity/) or the [_ThrowTheSwitch's_ own articles](https://www.throwtheswitch.org/articles). In short, you set the configuration switches for `Unity` in a dedicated [`unity_config.h`](tests/unittest/support/unity_config.h) file, and configure `Ceedling` with the [`project.yml`](tests/unittest/project.yml). `Ceedling` is a neat little helper that generates all the test runners for you, so all you need to do is add your own test files and tell `Ceedling` how to detect them. Have a look at the files in this repository in case you need details!
 
-In the [`project.yml`](https://github.com/lmapii/cproject/blob/main/tests/unittest/project.yml) we told `Ceedling` that our tests will be located in the `tests/unittest/test` directory and all test file names have the prefix `test`. So all we need to do is to add our [`test_dummy.c`](https://github.com/lmapii/cproject/blob/main/tests/unittest/test/test_dummy.c) file to test our implementation, leading to the following files added:
+In the [`project.yml`](tests/unittest/project.yml) we told `Ceedling` that our tests will be located in the `tests/unittest/test` directory and all test file names have the prefix `test`. So all we need to do is to add our [`test_dummy.c`](tests/unittest/test/test_dummy.c) file to test our implementation, leading to the following files added:
 
 
 ```bash
@@ -577,7 +575,7 @@ IGNORED: 0
 
 ### Bonus: Coverage reports
 
-The previously mentioned [article on Embedded Artistry](https://embeddedartistry.com/blog/2019/2/25/unit-testing-and-reporting-on-a-build-server-using-ceedling-and-unity/) also shows how to configure coverage reports. This is already set up in the [`project.yml` of the GitHub example project](https://github.com/lmapii/cproject/blob/main/tests/unittest/project.yml), and since we included `gcovr` in the `apt` packages of our image, we are good to run our unit tests with coverage:
+The previously mentioned [article on Embedded Artistry](https://embeddedartistry.com/blog/2019/2/25/unit-testing-and-reporting-on-a-build-server-using-ceedling-and-unity/) also shows how to configure coverage reports. This is already set up in the [`project.yml`](tests/unittest/project.yml), and since we included `gcovr` in the `apt` packages of our image, we are good to run our unit tests with coverage:
 
 ```bash
 $ ceedling gcov:all
@@ -608,7 +606,7 @@ dummy.c No branches
 dummy.c No calls
 ```
 
-The [`project.yml`](https://github.com/lmapii/cproject/blob/main/tests/unittest/project.yml) also sets up a utility for generating coverage reports. In this demo project we can generate a `gcovr` HTML report with the following command:
+The [`project.yml`](tests/unittest/project.yml) also sets up a utility for generating coverage reports. In this demo project we can generate a `gcovr` HTML report with the following command:
 
 ```bash
 $ ceedling utils:gcov
@@ -617,7 +615,7 @@ Creating gcov results report(s) in 'build/artifacts/gcov'... Done in 1.359 secon
 
 You'll now find the HTML report in `tests/unittest/build/artifacts/gcov/GcovCoverageResults.html`.
 
-<img src="https://github.com/lmapii/cproject/blob/main/assets/gcovr-report.png?raw=true">
+<img src="assets/gcovr-report.png?raw=true">
 
 
 
@@ -633,7 +631,7 @@ Since nowadays [dockerhub](https://hub.docker.com/) is no longer entirely free t
 
 ### Adding a GitHub action
 
-GitHub actions are added `.yml` workflow files in the `.github/workflows` directory of the repository. We'll name our workflow file [`ci.yml`](https://github.com/lmapii/cproject/blob/main/.github/workflows/ci.yml):
+GitHub actions are added `.yml` workflow files in the `.github/workflows` directory of the repository. We'll name our workflow file [`ci.yml`](.github/workflows/ci.yml):
 
 ```yml
 name: ci
@@ -798,11 +796,9 @@ Never forget to specify a retention period for your artifacts, since otherwise, 
 
 If you've managed to bear with me until this point, thank you for reading! Our job is done here, the library builds, the report is available as an artifact, and all of this without clogging our computer with tools.
 
-<img src="https://github.com/lmapii/cproject/blob/main/assets/github-action.png?raw=true">
+<img src="assets/github-action.png?raw=true">
 
 But are we really ever done? A development environment grows with the project, and so will your base image. Even at this point it grew fairly large, and if that is a problem for you or your contributors, you should look into some of the [strategies to reduce your image size](https://www.docker.com/blog/reduce-your-image-size-with-the-dive-in-docker-extension/). Another strategy is to split images based on their usage, e.g., use a different image for building and another one for testing. This can greatly reduce your image size and allows you to use already stripped down base images. This discussion, however, is far beyond the scope of this article.
-
-As mentioned throughout the article, the [example project is available on GitHub](https://github.com/lmapii/cproject). Feel free to point out my mistakes or add some improvements to the project yourself!
 
 You have now all the skills to set up a containerized C/C++ project with a CI on GitHub. With this at hand, it should be easy to add a specific compiler to your _Dockerfile_ or to clean up all the mistakes that I did when setting up the CI.
 
