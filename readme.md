@@ -146,13 +146,13 @@ Let's spin up a container from our image and take it for a test drive:
 
 ```bash
 $ docker run --rm -it --platform linux/amd64 cproject-builder:latest /bin/bash
-$
+
 $ gcc --version
 gcc (Debian 10.2.1-6) 10.2.1 20210110
 Copyright (C) 2020 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-$
+
 $ cmake --version
 cmake version 3.18.4
 
