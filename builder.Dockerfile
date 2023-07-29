@@ -52,7 +52,20 @@ RUN ln -s /usr/bin/clang-format-${llvm_version} /usr/local/bin/clang-format
 RUN ln -s /usr/bin/clang-tidy-${llvm_version} /usr/local/bin/clang-tidy
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-# install clang wrappers
+# option A: install rust and install clang wrappers via cargo
+# this option installs rust and cargo, and then compiles the clang wrappers from scratch.
+# this can take a significant amount of time (e.g., several minutes just to compile one tool),
+# and also increases the image size significantly. therefore, we go for option B below.
+
+# RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain stable -y
+# ENV PATH=/root/.cargo/bin:$PATH
+
+# Each takes around 280 s to build on an M2 macbook air
+# RUN cargo install run-clang-format
+# RUN cargo install run-clang-tidy
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# option B: install pre-built clang wrappers
 
 RUN mkdir -p /usr/local/run-clang-format
 RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-format/releases/download/v1.4.10/run-clang-format-v1.4.10-i686-unknown-linux-gnu.tar.gz" && \
@@ -75,3 +88,20 @@ RUN run-clang-format --version
 RUN gem install ceedling
 # set standard encoding to UTF-8 for ruby (and thus ceedling)
 ENV RUBYOPT "-KU -E utf-8:utf-8"
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# cleanup and vulnerability fixes
+
+# check all installed packages with "apt list", maybe remove packages.
+RUN apt remove -y \
+    wget
+
+# FIXME: remove more packages ...
+# RUN apt remove -y \
+#     python3-yaml \
+#     curl \
+#     unzip \
+#     cpp \
+#     cpp-10 \
+#     nano \
+#     vim
