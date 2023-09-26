@@ -79,7 +79,7 @@ RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-tidy/releases/d
     tar -C /usr/local/run-clang-tidy -xzf clang-utils.tgz --strip-components 1 && \
     rm clang-utils.tgz
 ENV PATH /usr/local/run-clang-tidy:$PATH
-RUN run-clang-format --version
+RUN run-clang-tidy --version
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # install unity and ceedling
