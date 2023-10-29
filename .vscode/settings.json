@@ -6,5 +6,6 @@
     "editor.formatOnSave": true
   },
   "C_Cpp.default.compileCommands": "${workspaceFolder}/src/build/compile_commands.json",
-  "cmake.configureOnOpen": true
+  "cmake.configureOnOpen": true,
+  "extensions.ignoreRecommendations": true
 }
