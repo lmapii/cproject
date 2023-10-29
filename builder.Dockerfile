@@ -68,14 +68,14 @@ RUN ln -s /usr/bin/clang-tidy-${llvm_version} /usr/local/bin/clang-tidy
 # option B: install pre-built clang wrappers
 
 RUN mkdir -p /usr/local/run-clang-format
-RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-format/releases/download/v1.4.10/run-clang-format-v1.4.10-i686-unknown-linux-gnu.tar.gz" && \
+RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-format/releases/download/v1.4.13/run-clang-format-v1.4.13-i686-unknown-linux-gnu.tar.gz" && \
     tar -C /usr/local/run-clang-format -xzf clang-utils.tgz --strip-components 1 && \
     rm clang-utils.tgz
 ENV PATH /usr/local/run-clang-format:$PATH
 RUN run-clang-format --version
 
 RUN mkdir -p /usr/local/run-clang-tidy
-RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-tidy/releases/download/v0.2.1/run-clang-tidy-v0.2.1-i686-unknown-linux-gnu.tar.gz" && \
+RUN wget -O clang-utils.tgz "https://github.com/lmapii/run-clang-tidy/releases/download/v0.2.4/run-clang-tidy-v0.2.4-i686-unknown-linux-gnu.tar.gz" && \
     tar -C /usr/local/run-clang-tidy -xzf clang-utils.tgz --strip-components 1 && \
     rm clang-utils.tgz
 ENV PATH /usr/local/run-clang-tidy:$PATH
