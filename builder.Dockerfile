@@ -1,3 +1,7 @@
+# update the base_tag to the version of the base image
+# e.g., "bullseye" is currently (2024-02) still the latest version for vscode devcontainers:
+# https://hub.docker.com/_/microsoft-vscode-devcontainers
+
 ARG base_tag=bullseye
 ARG base_img=mcr.microsoft.com/vscode/devcontainers/base:dev-${base_tag}
 # ARG base_img=debian:${base_tag}
@@ -7,6 +11,9 @@ FROM --platform=linux/amd64 ${base_img} AS builder-install
 # the following shows how to install the latest version of a package.
 # you can determine the installed version with `apt-cache policy <list of packages>` and fix
 # the version to install with <package>=<version> in the list below.
+
+# notice that ruby is being installed for ceedling and would otherwise most likely not be needed
+# https://www.throwtheswitch.org/ceedling
 
 RUN apt-get update --fix-missing && apt-get -y upgrade
 RUN apt-get install -y --no-install-recommends \

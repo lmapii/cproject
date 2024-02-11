@@ -29,7 +29,7 @@ jobs:
       -
         name: Build docker builder-image
         if: steps.cache-docker.outputs.cache-hit != 'true'
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: builder.Dockerfile
