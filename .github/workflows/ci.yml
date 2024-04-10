@@ -8,6 +8,10 @@ on:
   schedule:
     - cron: '0 1 * * 0'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 # https://docs.docker.com/build/ci/github-actions/share-image-jobs/
 # just using caches instead of artifact upload.
 jobs:
